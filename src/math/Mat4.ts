@@ -111,6 +111,7 @@ export class Mat4 {
 		return this
 	}
 
+	// Column-major order.
 	toTuple() {
 		// prettier-ignore
 		return [

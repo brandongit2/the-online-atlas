@@ -1,12 +1,24 @@
+import {clamp} from "lodash"
+
 import {drawTile, genMeshes} from "./draw-tile"
 import {getTilesInView} from "./get-tiles-in-view"
 import {store, tileCache} from "./store"
 import {type MapTile} from "./types"
 import {tileIdToStr} from "./util"
-import {canvasContext, depthTexture, device} from "./webgpu"
+import {canvas, canvasContext, device} from "./webgpu"
 import {dispatchToWorker} from "@/worker-pool"
 
+let hasResized = true
 const frameLoop = async () => {
+	if (hasResized) {
+		const mapWidth = clamp(window.innerWidth * devicePixelRatio, 1, device.limits.maxTextureDimension2D)
+		const mapHeight = clamp(window.innerHeight * devicePixelRatio, 1, device.limits.maxTextureDimension2D)
+		store.mapDims = [mapWidth, mapHeight]
+
+		// renderPassDescriptor.depthStencilAttachment.view = store.depthTextureView
+		hasResized = false
+	}
+
 	store.updateViewMatrix()
 
 	const tilesInView = getTilesInView()
@@ -57,12 +69,12 @@ const renderPassDescriptor = {
 			storeOp: `store`,
 		},
 	],
-	depthStencilAttachment: {
-		view: depthTexture.createView({label: `depth texture view`}),
-		depthClearValue: 0,
-		depthLoadOp: `clear`,
-		depthStoreOp: `store`,
-	},
+	// depthStencilAttachment: {
+	// 	view: store.depthTextureView,
+	// 	depthClearValue: 0,
+	// 	depthLoadOp: `clear`,
+	// 	depthStoreOp: `store`,
+	// },
 } satisfies GPURenderPassDescriptor
 
 const render = (tiles: MapTile[]) => {
@@ -80,3 +92,8 @@ const render = (tiles: MapTile[]) => {
 	const commandBuffer = encoder.finish()
 	device.queue.submit([commandBuffer])
 }
+
+const resizeObserver = new ResizeObserver(() => {
+	hasResized = true
+})
+resizeObserver.observe(canvas)

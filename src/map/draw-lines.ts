@@ -86,11 +86,11 @@ const renderPipeline = device.createRenderPipeline({
 		entryPoint: `fs`,
 		targets: [{format: presentationFormat}],
 	},
-	depthStencil: {
-		depthWriteEnabled: true,
-		depthCompare: `greater`,
-		format: `depth24plus`,
-	},
+	// depthStencil: {
+	// 	depthWriteEnabled: true,
+	// 	depthCompare: `greater`,
+	// 	format: `depth24plus`,
+	// },
 })
 
 export const drawLines = (

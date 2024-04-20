@@ -1,23 +1,60 @@
 import {type Coord3d, type MapTile, type TileIdStr} from "./types"
 import {altitudeToZoom, lngLatToWorld, zoomToAltitude} from "./util"
-import {device, mapDims} from "./webgpu"
+import {canvas, device} from "./webgpu"
 import {Mat4} from "@/math/Mat4"
 import {Vec3} from "@/math/Vec3"
 
 export const tileCache = new Map<TileIdStr, MapTile | "pending">()
 
+const createDepthTexture = (size: [number, number]) =>
+	device.createTexture({
+		label: `depth texture`,
+		size,
+		format: `depth24plus`,
+		usage: GPUTextureUsage.RENDER_ATTACHMENT,
+	})
+
 export abstract class store {
+	static #mapDims: [number, number] = [window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio]
+	static #depthTexture = createDepthTexture(this.#mapDims)
+	static get depthTexture() {
+		return this.#depthTexture
+	}
+	static #depthTextureView = this.#depthTexture.createView({label: `depth texture view`})
+	static get depthTextureView() {
+		return this.#depthTextureView
+	}
+	static get mapDims() {
+		return this.#mapDims
+	}
+	static set mapDims(mapDims) {
+		this.#mapDims = mapDims
+		canvas.width = mapDims[0]
+		canvas.height = mapDims[1]
+
+		const oldDepthTexture = this.#depthTexture
+		this.#depthTexture = createDepthTexture(mapDims)
+		this.#depthTextureView = this.#depthTexture.createView({label: `depth texture view`})
+		oldDepthTexture.destroy()
+	}
+
 	static #fovX = 80
 	static get fovX() {
 		return this.#fovX
 	}
 	static set fovX(fovX) {
 		this.#fovX = fovX
-		this.#projectionMatrix.makePerspectiveMatrix(fovX, mapDims[0] / mapDims[1], 0.1, 1000)
+		this.#projectionMatrix.makePerspectiveMatrix(fovX, this.#mapDims[0] / this.#mapDims[1], 0.1, 1000)
 		device.queue.writeBuffer(this.#projectionMatrixUniformBuffer, 0, new Float32Array(this.#projectionMatrix))
 	}
 
-	static #projectionMatrix = Mat4.makePerspectiveMatrix(null, this.#fovX, mapDims[0] / mapDims[1], 0.1, 1000)
+	static #projectionMatrix = Mat4.makePerspectiveMatrix(
+		null,
+		this.#fovX,
+		this.#mapDims[0] / this.#mapDims[1],
+		0.1,
+		1000,
+	)
 	static get projectionMatrix() {
 		return this.#projectionMatrix
 	}
