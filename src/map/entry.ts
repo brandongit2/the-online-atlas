@@ -1,75 +1,82 @@
-import {clamp} from "lodash"
+import {drawTile, genMeshes} from "./draw-tile"
+import {getTilesInView} from "./get-tiles-in-view"
+import {store, tileCache} from "./store"
+import {type MapTile} from "./types"
+import {tileIdToStr} from "./util"
+import {canvasContext, depthTexture, device} from "./webgpu"
+import {dispatchToWorker} from "@/worker-pool"
 
-import {mapDims} from "./state"
+const frameLoop = async () => {
+	store.updateViewMatrix()
 
-const gpuAdapter = await navigator.gpu.requestAdapter()
-if (!gpuAdapter) throw new Error(`No suitable GPUs found`)
-const device = await gpuAdapter.requestDevice()
-device.lost
-	.then((info) => {
-		if (info.reason !== `destroyed`) throw new Error(`GPU lost. Info: ${info.message}`)
-	})
-	.catch((error) => {
-		throw error
-	})
+	const tilesInView = getTilesInView()
+	const tilesToRender: MapTile[] = []
+	for (const tileId of tilesInView) {
+		const tileIdStr = tileIdToStr(tileId)
+		const tile = tileCache.get(tileIdStr)
+		if (tile && tile !== `pending`) {
+			tilesToRender.push(tile)
+		} else {
+			tileCache.set(tileIdStr, `pending`)
+			dispatchToWorker(`fetchTile`, {id: tileIdStr})
+				.then((tile) => {
+					tileCache.set(tileIdStr, tile)
+				})
+				.catch((err) => {
+					throw err
+				})
+		}
+	}
+	await Promise.all(
+		tilesToRender.map(async (tile) => {
+			await genMeshes(tile)
+		}),
+	)
 
-const canvas = document.getElementById(`map-canvas`) as HTMLCanvasElement
-const canvasContext = canvas.getContext(`webgpu`)
-if (!canvasContext) throw new Error(`WebGPU not supported.`)
-const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
-canvasContext.configure({
-	device,
-	format: presentationFormat,
-})
+	render(tilesToRender)
 
-const handleResize = () => {
-	const mapWidth = clamp(window.innerWidth * devicePixelRatio, 1, device.limits.maxTextureDimension2D)
-	const mapHeight = clamp(window.innerHeight * devicePixelRatio, 1, device.limits.maxTextureDimension2D)
-	canvas.width = mapWidth
-	canvas.height = mapHeight
-
-	return device.createTexture({
-		label: `depth texture`,
-		size: mapDims,
-		format: `depth24plus`,
-		usage: GPUTextureUsage.RENDER_ATTACHMENT,
+	requestAnimationFrame(() => {
+		frameLoop().catch((err) => {
+			throw err
+		})
 	})
 }
-
-let depthTexture: GPUTexture
-depthTexture = handleResize()
-addEventListener(`resize`, () => {
-	const oldDepthTexture = depthTexture
-	depthTexture = handleResize()
-	oldDepthTexture.destroy()
+requestAnimationFrame(() => {
+	frameLoop().catch((err) => {
+		throw err
+	})
 })
 
-const render = () => {
-	const encoder = device.createCommandEncoder({label: `encoder`})
-	const pass = encoder.beginRenderPass({
-		label: `render pass`,
-		colorAttachments: [
-			{
-				view: canvasContext.getCurrentTexture().createView({label: `colour texture view`}),
-				clearValue: [0, 0, 0, 1],
-				loadOp: `clear`,
-				storeOp: `store`,
-			},
-		],
-		depthStencilAttachment: {
-			view: depthTexture.createView({label: `depth texture view`}),
-			depthClearValue: 0,
-			depthLoadOp: `clear`,
-			depthStoreOp: `store`,
+const renderPassDescriptor = {
+	label: `render pass`,
+	colorAttachments: [
+		{
+			view: canvasContext.getCurrentTexture().createView({label: `colour texture view`}),
+			clearValue: [0, 0, 0, 1],
+			loadOp: `clear`,
+			storeOp: `store`,
 		},
+	],
+	depthStencilAttachment: {
+		view: depthTexture.createView({label: `depth texture view`}),
+		depthClearValue: 0,
+		depthLoadOp: `clear`,
+		depthStoreOp: `store`,
+	},
+} satisfies GPURenderPassDescriptor
+
+const render = (tiles: MapTile[]) => {
+	const encoder = device.createCommandEncoder({label: `encoder`})
+	renderPassDescriptor.colorAttachments[0]!.view = canvasContext
+		.getCurrentTexture()
+		.createView({label: `colour texture view`})
+	const pass = encoder.beginRenderPass(renderPassDescriptor)
+
+	tiles.forEach((tile) => {
+		drawTile(pass, tile)
 	})
 
 	pass.end()
 	const commandBuffer = encoder.finish()
 	device.queue.submit([commandBuffer])
-
-	requestAnimationFrame(render)
 }
-requestAnimationFrame(render)
-
-export {}

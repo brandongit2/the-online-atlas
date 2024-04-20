@@ -3,6 +3,7 @@ module.exports = {
 	extends: [`eslint:recommended`, `plugin:import/recommended`],
 	rules: {
 		"import/no-anonymous-default-export": `warn`,
+		"import/no-cycle": `error`,
 		"import/no-duplicates": `error`,
 		"import/order": [
 			`warn`,
@@ -58,6 +59,7 @@ module.exports = {
 				"@typescript-eslint/no-unnecessary-type-assertion": `warn`,
 				"@typescript-eslint/no-unused-vars": [`warn`, {ignoreRestSiblings: true, args: `all`}],
 				"@typescript-eslint/quotes": [`warn`, `backtick`],
+				"@typescript-eslint/require-await": `warn`,
 				"import/consistent-type-specifier-style": [`warn`, `prefer-inline`],
 				"prefer-const": `off`,
 				quotes: `off`,
