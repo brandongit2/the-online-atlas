@@ -1,6 +1,6 @@
 import {clamp} from "lodash"
 
-import {mapDims} from "@/state"
+import {mapDims} from "./state"
 
 const gpuAdapter = await navigator.gpu.requestAdapter()
 if (!gpuAdapter) throw new Error(`No suitable GPUs found`)
@@ -16,6 +16,11 @@ device.lost
 const canvas = document.getElementById(`map-canvas`) as HTMLCanvasElement
 const canvasContext = canvas.getContext(`webgpu`)
 if (!canvasContext) throw new Error(`WebGPU not supported.`)
+const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
+canvasContext.configure({
+	device,
+	format: presentationFormat,
+})
 
 const handleResize = () => {
 	const mapWidth = clamp(window.innerWidth * devicePixelRatio, 1, device.limits.maxTextureDimension2D)

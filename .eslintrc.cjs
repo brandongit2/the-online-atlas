@@ -44,7 +44,10 @@ module.exports = {
 				ecmaVersion: `latest`,
 			},
 			settings: {
-				"import/resolver": {typescript: true},
+				"import/resolver": {
+					node: true,
+					typescript: true,
+				},
 			},
 			rules: {
 				"@typescript-eslint/array-type": [`warn`, {default: `array-simple`}],
