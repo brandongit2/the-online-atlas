@@ -71,30 +71,21 @@ export const genMeshes = async (tile: MapTile) => {
 			}
 
 			if (layer.polygons.geometry.length > 0) {
-				layer.polygons.numIndices = 6
 				if (!layer.polygons.indexGpuBuffer) {
 					layer.polygons.indexGpuBuffer = device.createBuffer({
 						label: `layer ${layer.name} polygons index buffer`,
-						// size: layer.polygons.indexBuffer.byteLength,
-						size: 6 * 4,
+						size: layer.polygons.indexBuffer.byteLength,
 						usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
 					})
-					// device.queue.writeBuffer(layer.polygons.indexGpuBuffer, 0, layer.polygons.indexBuffer)
-					device.queue.writeBuffer(layer.polygons.indexGpuBuffer, 0, new Uint32Array([0, 2, 1, 1, 2, 3]))
+					device.queue.writeBuffer(layer.polygons.indexGpuBuffer, 0, layer.polygons.indexBuffer)
 				}
 				if (!layer.polygons.vertexGpuBuffer) {
 					layer.polygons.vertexGpuBuffer = device.createBuffer({
 						label: `layer ${layer.name} polygons vertex buffer`,
-						// size: layer.polygons.vertexBuffer.byteLength,
-						size: 12 * 4,
+						size: layer.polygons.vertexBuffer.byteLength,
 						usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
 					})
-					// device.queue.writeBuffer(layer.polygons.vertexGpuBuffer, 0, layer.polygons.vertexBuffer)
-					device.queue.writeBuffer(
-						layer.polygons.vertexGpuBuffer,
-						0,
-						new Float32Array([-1, 1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0]),
-					)
+					device.queue.writeBuffer(layer.polygons.vertexGpuBuffer, 0, layer.polygons.vertexBuffer)
 				}
 			}
 		}),

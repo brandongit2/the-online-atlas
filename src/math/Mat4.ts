@@ -199,10 +199,10 @@ export class Mat4 {
 		const r = 1 / (far - near)
 		// prettier-ignore
 		return m.set(
-			f, 0         , 0       , 0             ,
-			0, f * aspect, 0       , 0             ,
-			0, 0         , near * r, near * far * r,
-			0, 0         , 1       , 0             ,
+			f, 0         ,  0       , 0             ,
+			0, f * aspect,  0       , 0             ,
+			0, 0         ,  near * r, near * far * r,
+			0, 0         , -1       , 0             ,
 		)
 	}
 	makePerspectiveMatrix = (fovX: number, aspect: number, near: number, far: number) =>

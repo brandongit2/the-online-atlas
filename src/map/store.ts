@@ -36,6 +36,8 @@ export abstract class store {
 		this.#depthTexture = createDepthTexture(mapDims)
 		this.#depthTextureView = this.#depthTexture.createView({label: `depth texture view`})
 		oldDepthTexture.destroy()
+
+		this.projectionMatrix = Mat4.makePerspectiveMatrix(null, this.#fovX, mapDims[0] / mapDims[1], 0.1, 1000)
 	}
 
 	static #fovX = 80
@@ -99,8 +101,13 @@ export abstract class store {
 	static get cameraZoom() {
 		return this.#cameraZoom
 	}
+	static set cameraZoom(cameraZoom) {
+		this.#cameraZoom = cameraZoom
+		this.cameraPos.alt = zoomToAltitude(cameraZoom, this.#fovX)
+		this.updateViewMatrix()
+	}
 	static updateViewMatrix = () => {
-		this.#cameraPosWorld = lngLatToWorld([this.cameraPos.lng, this.cameraPos.lat], this.cameraPos.alt)
+		this.#cameraPosWorld = lngLatToWorld([this.cameraPos.lng, this.cameraPos.lat], this.cameraPos.alt + 1)
 		this.#viewMatrix.lookAt(new Vec3(this.#cameraPosWorld), new Vec3(0, 0, 0), new Vec3(0, 1, 0))
 		device.queue.writeBuffer(this.#viewMatrixUniformBuffer, 0, new Float32Array(this.#viewMatrix))
 

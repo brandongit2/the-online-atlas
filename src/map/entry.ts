@@ -1,5 +1,6 @@
 import {clamp} from "lodash"
 
+import "./controls"
 import {drawTile, genMeshes} from "./draw-tile"
 import {getTilesInView} from "./get-tiles-in-view"
 import {store, tileCache} from "./store"
@@ -15,7 +16,7 @@ const frameLoop = async () => {
 		const mapHeight = clamp(window.innerHeight * devicePixelRatio, 1, device.limits.maxTextureDimension2D)
 		store.mapDims = [mapWidth, mapHeight]
 
-		// renderPassDescriptor.depthStencilAttachment.view = store.depthTextureView
+		renderPassDescriptor.depthStencilAttachment.view = store.depthTextureView
 		hasResized = false
 	}
 
@@ -69,12 +70,12 @@ const renderPassDescriptor = {
 			storeOp: `store`,
 		},
 	],
-	// depthStencilAttachment: {
-	// 	view: store.depthTextureView,
-	// 	depthClearValue: 0,
-	// 	depthLoadOp: `clear`,
-	// 	depthStoreOp: `store`,
-	// },
+	depthStencilAttachment: {
+		view: store.depthTextureView,
+		depthClearValue: 0,
+		depthLoadOp: `clear`,
+		depthStoreOp: `store`,
+	},
 } satisfies GPURenderPassDescriptor
 
 const render = (tiles: MapTile[]) => {

@@ -28,9 +28,12 @@ export const fetchTile = async ({id}: FetchTileArgs, abortSignal: AbortSignal) =
 		.arrayBuffer()
 		.catch((err) => {
 			if (err instanceof DOMException && err.name === `AbortError`) return null
-			throw err
+			// throw err
 		})
-	if (!data) return
+	if (!data) {
+		postMessage({id, layers: {}})
+		return
+	}
 
 	const tileData = new VectorTile(new Pbf(data))
 	const layers: Record<string, MapLayer> = {}

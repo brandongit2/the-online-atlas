@@ -25,5 +25,9 @@ export const getTilesInView = () => {
 }
 
 const isTileInView = (tileId: TileId) => {
-	return true
+	if (tileId.zoom < 3) return true
+	if (tileId.zoom === 3 && (tileId.x % 2 === 0) != (tileId.y % 2 === 0)) return true
+	if (tileId.zoom === 4 && (tileId.x % 2 === 0) != (tileId.y % 2 === 0)) return true
+	if (tileId.zoom === 5 && (tileId.x % 2 === 0) != (tileId.y % 2 === 0)) return true
+	return false
 }
