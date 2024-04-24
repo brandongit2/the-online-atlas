@@ -1,7 +1,7 @@
 import {type Promisable} from "type-fest"
 
+import {fetchTile, type FetchTileArgs, type FetchTileReturn} from "./fetch-tile"
 import {linestringsToMesh, type LinestringsToMeshArgs, type LinestringsToMeshReturn} from "./linestrings-to-mesh"
-import {fetchTile, type FetchTileArgs, type FetchTileReturn} from "@/workers/fetch-tile"
 
 export type WorkerActions = {
 	fetchTile: {

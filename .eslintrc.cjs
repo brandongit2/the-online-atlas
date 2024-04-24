@@ -13,7 +13,7 @@ module.exports = {
 					[`object`, `unknown`, `type`],
 					[`internal`, `parent`, `index`, `sibling`],
 				],
-				pathGroups: [{pattern: `@/**`, group: `parent`}],
+				pathGroups: [{pattern: `{@/**,@rust-lib}`, group: `parent`}],
 				pathGroupsExcludedImportTypes: [`type`],
 				"newlines-between": `always`,
 				alphabetize: {order: `asc`, caseInsensitive: true},
