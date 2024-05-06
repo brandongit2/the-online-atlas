@@ -1,0 +1,25 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"noEmit": true,
+		"skipLibCheck": true,
+
+		"allowImportingTsExtensions": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["web/src/*"],
+			"@rust-lib": ["./pkg"]
+		},
+		"typeRoots": ["./node_modules/@types", "./node_modules/@webgpu/types"]
+	},
+	"include": ["src"],
+	"references": [{"path": "./tsconfig.node.json"}]
+}

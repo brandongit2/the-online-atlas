@@ -1,0 +1,6 @@
+{
+	"name": "the-online-atlas-rust-lib",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@9.0.6"
+}

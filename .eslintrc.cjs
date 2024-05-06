@@ -5,6 +5,7 @@ module.exports = {
 		"import/no-anonymous-default-export": `warn`,
 		"import/no-cycle": `error`,
 		"import/no-duplicates": `error`,
+		"import/no-extraneous-dependencies": [`error`, {devDependencies: true}],
 		"import/order": [
 			`warn`,
 			{

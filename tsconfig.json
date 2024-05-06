@@ -1,28 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"module": "ESNext",
-		"skipLibCheck": true,
-
-		/* Bundler mode */
-		"allowImportingTsExtensions": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"moduleResolution": "bundler",
-		"noEmit": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./src/*"],
-			"@rust-lib": ["./pkg"]
-		},
-		"resolveJsonModule": true,
-		"typeRoots": ["./node_modules/@types", "./node_modules/@webgpu/types"],
-
-		/* Linting */
 		"noUncheckedIndexedAccess": true,
 		"strict": true
-	},
-	"include": ["src"],
-	"references": [{"path": "./tsconfig.node.json"}]
+	}
 }
