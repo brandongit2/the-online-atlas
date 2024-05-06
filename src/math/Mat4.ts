@@ -1,5 +1,5 @@
-import {tan_d} from "@/map/util"
-import {Vec3} from "@/math/Vec3"
+import {tan_d} from "@/map/util";
+import {Vec3} from "@/math/Vec3";
 
 // prettier-ignore
 // `Mat4Elements` is always in column-major order.
@@ -12,27 +12,27 @@ type Mat4Elements = [
 
 export class Mat4 {
 	// Element indices here are in row-major order.
-	_11: number = null!
-	_12: number = null!
-	_13: number = null!
-	_14: number = null!
-	_21: number = null!
-	_22: number = null!
-	_23: number = null!
-	_24: number = null!
-	_31: number = null!
-	_32: number = null!
-	_33: number = null!
-	_34: number = null!
-	_41: number = null!
-	_42: number = null!
-	_43: number = null!
-	_44: number = null!
+	_11: number = null!;
+	_12: number = null!;
+	_13: number = null!;
+	_14: number = null!;
+	_21: number = null!;
+	_22: number = null!;
+	_23: number = null!;
+	_24: number = null!;
+	_31: number = null!;
+	_32: number = null!;
+	_33: number = null!;
+	_34: number = null!;
+	_41: number = null!;
+	_42: number = null!;
+	_43: number = null!;
+	_44: number = null!;
 
-	constructor()
-	constructor(a: Mat4)
-	constructor(elements: Mat4Elements)
-	constructor(v1: Vec3, v2: Vec3, v3: Vec3)
+	constructor();
+	constructor(a: Mat4);
+	constructor(elements: Mat4Elements);
+	constructor(v1: Vec3, v2: Vec3, v3: Vec3);
 	// prettier-ignore
 	constructor(
 		_11: number, _12: number, _13: number, _14: number,
@@ -132,53 +132,53 @@ export class Mat4 {
 	}
 
 	private static mulImpl = (m: Mat4, a: Mat4, b: Mat4) => {
-		m._11 = a._11 * b._11 + a._12 * b._21 + a._13 * b._31 + a._14 * b._41
-		m._12 = a._11 * b._12 + a._12 * b._22 + a._13 * b._32 + a._14 * b._42
-		m._13 = a._11 * b._13 + a._12 * b._23 + a._13 * b._33 + a._14 * b._43
-		m._14 = a._11 * b._14 + a._12 * b._24 + a._13 * b._34 + a._14 * b._44
+		m._11 = a._11 * b._11 + a._12 * b._21 + a._13 * b._31 + a._14 * b._41;
+		m._12 = a._11 * b._12 + a._12 * b._22 + a._13 * b._32 + a._14 * b._42;
+		m._13 = a._11 * b._13 + a._12 * b._23 + a._13 * b._33 + a._14 * b._43;
+		m._14 = a._11 * b._14 + a._12 * b._24 + a._13 * b._34 + a._14 * b._44;
 
-		m._21 = a._21 * b._11 + a._22 * b._21 + a._23 * b._31 + a._24 * b._41
-		m._22 = a._21 * b._12 + a._22 * b._22 + a._23 * b._32 + a._24 * b._42
-		m._23 = a._21 * b._13 + a._22 * b._23 + a._23 * b._33 + a._24 * b._43
-		m._24 = a._21 * b._14 + a._22 * b._24 + a._23 * b._34 + a._24 * b._44
+		m._21 = a._21 * b._11 + a._22 * b._21 + a._23 * b._31 + a._24 * b._41;
+		m._22 = a._21 * b._12 + a._22 * b._22 + a._23 * b._32 + a._24 * b._42;
+		m._23 = a._21 * b._13 + a._22 * b._23 + a._23 * b._33 + a._24 * b._43;
+		m._24 = a._21 * b._14 + a._22 * b._24 + a._23 * b._34 + a._24 * b._44;
 
-		m._31 = a._31 * b._11 + a._32 * b._21 + a._33 * b._31 + a._34 * b._41
-		m._32 = a._31 * b._12 + a._32 * b._22 + a._33 * b._32 + a._34 * b._42
-		m._33 = a._31 * b._13 + a._32 * b._23 + a._33 * b._33 + a._34 * b._43
-		m._34 = a._31 * b._14 + a._32 * b._24 + a._33 * b._34 + a._34 * b._44
+		m._31 = a._31 * b._11 + a._32 * b._21 + a._33 * b._31 + a._34 * b._41;
+		m._32 = a._31 * b._12 + a._32 * b._22 + a._33 * b._32 + a._34 * b._42;
+		m._33 = a._31 * b._13 + a._32 * b._23 + a._33 * b._33 + a._34 * b._43;
+		m._34 = a._31 * b._14 + a._32 * b._24 + a._33 * b._34 + a._34 * b._44;
 
-		m._41 = a._41 * b._11 + a._42 * b._21 + a._43 * b._31 + a._44 * b._41
-		m._42 = a._41 * b._12 + a._42 * b._22 + a._43 * b._32 + a._44 * b._42
-		m._43 = a._41 * b._13 + a._42 * b._23 + a._43 * b._33 + a._44 * b._43
-		m._44 = a._41 * b._14 + a._42 * b._24 + a._43 * b._34 + a._44 * b._44
+		m._41 = a._41 * b._11 + a._42 * b._21 + a._43 * b._31 + a._44 * b._41;
+		m._42 = a._41 * b._12 + a._42 * b._22 + a._43 * b._32 + a._44 * b._42;
+		m._43 = a._41 * b._13 + a._42 * b._23 + a._43 * b._33 + a._44 * b._43;
+		m._44 = a._41 * b._14 + a._42 * b._24 + a._43 * b._34 + a._44 * b._44;
 
-		return m
-	}
+		return m;
+	};
 	static multiply = (m: Mat4 | null, ...matrices: Mat4[]) => {
-		m = m ?? new Mat4()
-		if (matrices.length === 0) return m
+		m = m ?? new Mat4();
+		if (matrices.length === 0) return m;
 
-		m.set(matrices.at(-1)!)
-		if (matrices.length === 1) return m
+		m.set(matrices.at(-1)!);
+		if (matrices.length === 1) return m;
 
 		for (let i = matrices.length - 2; i >= 0; i--) {
-			Mat4.mulImpl(swap, matrices[i]!, m)
-			m.set(swap)
+			Mat4.mulImpl(swap, matrices[i]!, m);
+			m.set(swap);
 		}
-		return m
-	}
+		return m;
+	};
 
 	static extractBasis = (v1: Vec3, v2: Vec3, v3: Vec3, a: Mat4) => {
-		v1.set(a._11, a._21, a._31)
-		v2.set(a._12, a._22, a._32)
-		v3.set(a._13, a._23, a._33)
-	}
-	extractBasis = (v1: Vec3, v2: Vec3, v3: Vec3) => Mat4.extractBasis(v1, v2, v3, this)
+		v1.set(a._11, a._21, a._31);
+		v2.set(a._12, a._22, a._32);
+		v3.set(a._13, a._23, a._33);
+	};
+	extractBasis = (v1: Vec3, v2: Vec3, v3: Vec3) => Mat4.extractBasis(v1, v2, v3, this);
 
 	static lookAt = (m: Mat4, eye: Vec3, target: Vec3, up: Vec3) => {
-		const z = Vec3.subtract(null, eye, target).normalize()
-		const x = Vec3.cross(null, up, z).normalize()
-		const y = Vec3.cross(null, z, x).normalize()
+		const z = Vec3.subtract(null, eye, target).normalize();
+		const x = Vec3.cross(null, up, z).normalize();
+		const y = Vec3.cross(null, z, x).normalize();
 
 		// prettier-ignore
 		m.set(
@@ -187,16 +187,16 @@ export class Mat4 {
 			z.x, z.y, z.z, -Vec3.dot(z, eye),
 			0,   0,   0,    1,
 		)
-		return m
-	}
-	lookAt = (eye: Vec3, target: Vec3, up: Vec3) => Mat4.lookAt(this, eye, target, up)
+		return m;
+	};
+	lookAt = (eye: Vec3, target: Vec3, up: Vec3) => Mat4.lookAt(this, eye, target, up);
 
 	static makePerspectiveMatrix = (m: Mat4 | null, fovX: number, aspect: number, near: number, far: number) => {
-		m = m ?? new Mat4()
+		m = m ?? new Mat4();
 
-		const t = tan_d(fovX / 2)
-		const f = 1 / t
-		const r = 1 / (far - near)
+		const t = tan_d(fovX / 2);
+		const f = 1 / t;
+		const r = 1 / (far - near);
 		// prettier-ignore
 		return m.set(
 			f, 0         ,  0       , 0             ,
@@ -204,10 +204,10 @@ export class Mat4 {
 			0, 0         ,  near * r, near * far * r,
 			0, 0         , -1       , 0             ,
 		)
-	}
+	};
 	makePerspectiveMatrix = (fovX: number, aspect: number, near: number, far: number) =>
-		Mat4.makePerspectiveMatrix(this, fovX, aspect, near, far)
+		Mat4.makePerspectiveMatrix(this, fovX, aspect, near, far);
 }
 
 // Certain operations necessitate a temporary matrix to store intermediate results.
-const swap = new Mat4()
+const swap = new Mat4();

@@ -1,12 +1,12 @@
-import polygonShaders from "./polygon.wgsl?raw"
-import {store} from "./store"
-import {device, presentationFormat} from "./webgpu"
+import polygonShaders from "./polygon.wgsl?raw";
+import {store} from "./store";
+import {device, presentationFormat} from "./webgpu";
 
 const colorUniformBuffer = device.createBuffer({
 	label: `polygon colour uniform buffer`,
 	size: 3 * Float32Array.BYTES_PER_ELEMENT,
 	usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-})
+});
 
 const bindGroupLayout = device.createBindGroupLayout({
 	label: `polygon bind group layout`,
@@ -30,12 +30,12 @@ const bindGroupLayout = device.createBindGroupLayout({
 			buffer: {type: `uniform`},
 		},
 	],
-})
+});
 
 const pipelineLayout = device.createPipelineLayout({
 	label: `polygon pipeline layout`,
 	bindGroupLayouts: [bindGroupLayout],
-})
+});
 
 const bindGroup = device.createBindGroup({
 	label: `polygon bind group`,
@@ -54,7 +54,7 @@ const bindGroup = device.createBindGroup({
 			resource: {buffer: colorUniformBuffer},
 		},
 	],
-})
+});
 
 const renderPipeline = device.createRenderPipeline({
 	label: `polygon render pipeline`,
@@ -89,21 +89,21 @@ const renderPipeline = device.createRenderPipeline({
 		depthCompare: `greater`,
 		format: `depth24plus`,
 	},
-})
+});
 
 export const drawPolygons = (
 	pass: GPURenderPassEncoder,
 	color: Float32Array,
 	data: {numIndices: number; indexGpuBuffer: GPUBuffer; vertexGpuBuffer: GPUBuffer},
 ) => {
-	if (data.numIndices === 0) return
+	if (data.numIndices === 0) return;
 
-	device.queue.writeBuffer(colorUniformBuffer, 0, color)
+	device.queue.writeBuffer(colorUniformBuffer, 0, color);
 
-	pass.setPipeline(renderPipeline)
-	pass.setBindGroup(0, bindGroup)
+	pass.setPipeline(renderPipeline);
+	pass.setBindGroup(0, bindGroup);
 
-	pass.setIndexBuffer(data.indexGpuBuffer, `uint32`)
-	pass.setVertexBuffer(0, data.vertexGpuBuffer)
-	pass.drawIndexed(data.numIndices)
-}
+	pass.setIndexBuffer(data.indexGpuBuffer, `uint32`);
+	pass.setVertexBuffer(0, data.vertexGpuBuffer);
+	pass.drawIndexed(data.numIndices);
+};

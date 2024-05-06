@@ -1,5 +1,5 @@
-import "./page.css"
+import "./page.css";
 
 export const HomePage = () => {
-	return null
-}
+	return null;
+};

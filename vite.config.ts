@@ -1,7 +1,7 @@
-import react from "@vitejs/plugin-react-swc"
-import {defineConfig} from "vite"
-import wasm from "vite-plugin-wasm"
-import tsconfigPaths from "vite-tsconfig-paths"
+import react from "@vitejs/plugin-react-swc";
+import {defineConfig} from "vite";
+import wasm from "vite-plugin-wasm";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	plugins: [react(), tsconfigPaths(), wasm()],
@@ -19,4 +19,4 @@ export default defineConfig({
 	worker: {
 		plugins: () => [tsconfigPaths()],
 	},
-})
+});
