@@ -2,7 +2,6 @@
 	"name": "the-online-atlas-web",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@9.0.6",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",

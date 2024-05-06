@@ -2,7 +2,10 @@
 	"name": "the-online-atlas-rust-lib",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@9.0.6",
+	"scripts": {
+		"build": "cargo build --target=wasm32-unknown-unknown --release && wasm-bindgen --out-dir build ./target/wasm32-unknown-unknown/release/the_online_atlas_rust_lib.wasm",
+		"postinstall": "pnpm run build"
+	},
 	"exports": {
 		"types": "./build/the_online_atlas_rust_lib.d.ts",
 		"default": "./build/the_online_atlas_rust_lib.js"

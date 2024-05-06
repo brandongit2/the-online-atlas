@@ -1,0 +1,5 @@
+{
+	"installCommand": "dnf install -y cargo && cargo install wasm-bindgen-cli && pnpm install",
+	"buildCommand": "pnpm run build",
+	"outputDirectory": "web/dist"
+}
