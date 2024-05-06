@@ -1,3 +1,4 @@
+/** @type {import("eslint").Linter.BaseConfig} */
 module.exports = {
 	root: true,
 	extends: [`eslint:recommended`, `plugin:import/recommended`],
@@ -14,7 +15,7 @@ module.exports = {
 					[`object`, `unknown`, `type`],
 					[`internal`, `parent`, `index`, `sibling`],
 				],
-				pathGroups: [{pattern: `{@/**,@rust-lib}`, group: `parent`}],
+				pathGroups: [{pattern: `@/**`, group: `parent`}],
 				pathGroupsExcludedImportTypes: [`type`],
 				"newlines-between": `always`,
 				alphabetize: {order: `asc`, caseInsensitive: true},
@@ -42,13 +43,13 @@ module.exports = {
 			parser: `@typescript-eslint/parser`,
 			parserOptions: {
 				project: true,
-				tsconfigRootDir: __dirname,
 				ecmaVersion: `latest`,
 			},
 			settings: {
 				"import/resolver": {
-					node: true,
-					typescript: true,
+					typescript: {
+						project: `./*/tsconfig.json`,
+					},
 				},
 			},
 			rules: {
@@ -83,11 +84,8 @@ module.exports = {
 			},
 		},
 		{
-			files: [`./*.cjs`, `./vite.config.ts`],
+			files: [`./*.cjs`],
 			env: {node: true},
-			parserOptions: {
-				project: `./tsconfig.node.json`,
-			},
 		},
 	],
 };
