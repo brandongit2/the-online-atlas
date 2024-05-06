@@ -1,11 +1,13 @@
-/** @type {import("eslint").Linter.BaseConfig} */
+const path = require(`path`);
+
+/** @type {import("eslint").Linter.Config} */
 module.exports = {
 	extends: `../.eslintrc.cjs`,
 	overrides: [
 		{
 			files: [`./vite.config.ts`],
 			parserOptions: {
-				project: `./tsconfig.node.json`,
+				project: path.resolve(__dirname, `./tsconfig.node.json`),
 			},
 		},
 	],

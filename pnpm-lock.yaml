@@ -67,6 +67,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      the-online-atlas-rust-lib:
+        specifier: link:../rust-lib
+        version: link:../rust-lib
       tiny-invariant:
         specifier: 1.3.3
         version: 1.3.3

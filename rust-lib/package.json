@@ -2,5 +2,9 @@
 	"name": "the-online-atlas-rust-lib",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@9.0.6"
+	"packageManager": "pnpm@9.0.6",
+	"exports": {
+		"types": "./build/the_online_atlas_rust_lib.d.ts",
+		"default": "./build/the_online_atlas_rust_lib.js"
+	}
 }
