@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd "$(dirname "$(readlink -f "$0")")"
+
+cargo build --target=wasm32-unknown-unknown --release
+wasm-bindgen ./target/wasm32-unknown-unknown/release/the_online_atlas_rust_lib.wasm --out-dir ./build
+wasm-opt ./build/the_online_atlas_rust_lib_bg.wasm -all -O2 -o ./build/the_online_atlas_rust_lib_bg.wasm

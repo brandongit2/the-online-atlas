@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "cargo build --target=wasm32-unknown-unknown --release && wasm-bindgen --out-dir build ./target/wasm32-unknown-unknown/release/the_online_atlas_rust_lib.wasm"
+		"build": "./build-script"
 	},
 	"exports": {
 		"types": "./build/the_online_atlas_rust_lib.d.ts",
