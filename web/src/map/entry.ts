@@ -27,7 +27,8 @@ const frameLoop = async () => {
 	for (const tileId of tilesInView) {
 		const tileIdStr = tileIdToStr(tileId);
 		const tile = tileCache.get(tileIdStr);
-		if (tile && tile !== `pending`) {
+		if (tile === `pending`) continue;
+		if (tile) {
 			tilesToRender.push(tile);
 		} else {
 			tileCache.set(tileIdStr, `pending`);

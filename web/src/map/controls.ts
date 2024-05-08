@@ -1,5 +1,4 @@
 import {clamp} from "lodash";
-import {greet} from "the-online-atlas-rust-lib";
 
 import {store} from "./store";
 import {canvas} from "./webgpu";
@@ -22,8 +21,4 @@ canvas.addEventListener(`pointermove`, (event) => {
 canvas.addEventListener(`wheel`, (event) => {
 	event.preventDefault();
 	store.cameraZoom = clamp(store.cameraZoom - event.deltaY / 50, 0, 18);
-});
-
-canvas.addEventListener(`pointerdown`, (event) => {
-	greet();
 });

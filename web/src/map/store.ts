@@ -37,7 +37,7 @@ export abstract class store {
 		this.#depthTextureView = this.#depthTexture.createView({label: `depth texture view`});
 		oldDepthTexture.destroy();
 
-		this.projectionMatrix = Mat4.makePerspectiveMatrix(null, this.#fovX, mapDims[0] / mapDims[1], 0.1, 1000);
+		this.projectionMatrix = Mat4.makePerspectiveMatrix(null, this.#fovX, mapDims[0] / mapDims[1], 0.000001, 10);
 	}
 
 	static #fovX = 80;
@@ -46,7 +46,7 @@ export abstract class store {
 	}
 	static set fovX(fovX) {
 		this.#fovX = fovX;
-		this.#projectionMatrix.makePerspectiveMatrix(fovX, this.#mapDims[0] / this.#mapDims[1], 0.1, 1000);
+		this.#projectionMatrix.makePerspectiveMatrix(fovX, this.#mapDims[0] / this.#mapDims[1], 0.000001, 10);
 		device.queue.writeBuffer(this.#projectionMatrixUniformBuffer, 0, new Float32Array(this.#projectionMatrix));
 	}
 
@@ -54,8 +54,8 @@ export abstract class store {
 		null,
 		this.#fovX,
 		this.#mapDims[0] / this.#mapDims[1],
-		0.1,
-		1000,
+		0.000001,
+		10,
 	);
 	static get projectionMatrix() {
 		return this.#projectionMatrix;
@@ -96,7 +96,7 @@ export abstract class store {
 		device.queue.writeBuffer(this.#viewMatrixUniformBuffer, 0, new Float32Array(this.#viewMatrix));
 	}
 
-	static cameraPos = {lng: 0, lat: 0, alt: zoomToAltitude(0, this.#fovX)}; // Altitude in metres
+	static cameraPos = {lng: 0, lat: 0, alt: zoomToAltitude(0, this.#fovX)}; // Altitude in Earth radii
 	static #cameraZoom = altitudeToZoom(this.cameraPos.alt, this.#fovX);
 	static get cameraZoom() {
 		return this.#cameraZoom;

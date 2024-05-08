@@ -54,6 +54,9 @@ export const lngLatToWorld = (lngLat: Coord2d, radius = 1): Coord3d => {
 	return [cosLat * sinLng * radius, sinLat * radius, cosLat * cosLng * radius];
 };
 
+export const tileLocalCoordToWorld = (coord: Coord2d, extent: number, tileId: TileId, radius = 1): Coord3d =>
+	lngLatToWorld(mercatorToLngLat(tileLocalCoordToMercator(coord, extent, tileId)), radius);
+
 export const mercatorToWorld = (point: Coord2d): Coord3d => lngLatToWorld(mercatorToLngLat(point));
 
 ///// Miscellaneous /////
