@@ -1,4 +1,4 @@
-import {VectorTile, VectorTileFeature} from "@mapbox/vector-tile";
+import {VectorTile} from "@mapbox/vector-tile";
 import earcut from "earcut";
 import Pbf from "pbf";
 import wretch from "wretch";
@@ -7,14 +7,27 @@ import AbortAddon from "wretch/addons/abort";
 import QueryStringAddon from "wretch/addons/queryString";
 
 import {MAPBOX_ACCESS_TOKEN} from "@/env";
-import {type Coord2d, type MapFeature, type MapLayer, type MapTile, type TileIdStr} from "@/map/types";
-import {tileIdFromStr, groupByTwos, mercatorToWorld, roughEq, tileLocalCoordToMercator} from "@/map/util";
+import {type Coord2d, type Coord3d, type TileIdStr} from "@/map/types";
+import {
+	tileIdFromStr,
+	groupByTwos,
+	mercatorToWorld,
+	roughEq,
+	tileLocalCoordToMercator,
+	tileLocalCoordToWorld,
+} from "@/map/util";
 
 export type FetchTileArgs = {
 	id: TileIdStr;
 };
 
-export type FetchTileReturn = MapTile;
+export type FetchTileReturn = Record<
+	string,
+	{
+		polylines: Coord3d[][];
+		polygons: {indices: number[]; vertices: Coord3d[]};
+	}
+>;
 
 export const fetchTile = async ({id}: FetchTileArgs, abortSignal: AbortSignal) => {
 	const {zoom, x, y} = tileIdFromStr(id);
@@ -28,7 +41,6 @@ export const fetchTile = async ({id}: FetchTileArgs, abortSignal: AbortSignal) =
 		.arrayBuffer()
 		.catch((err) => {
 			if (err instanceof DOMException && err.name === `AbortError`) return null;
-			// throw err
 		});
 	if (!data) {
 		postMessage({id, layers: {}});
@@ -36,64 +48,47 @@ export const fetchTile = async ({id}: FetchTileArgs, abortSignal: AbortSignal) =
 	}
 
 	const tileData = new VectorTile(new Pbf(data));
-	const layers: Record<string, MapLayer> = {};
+	const layers: FetchTileReturn = {};
 	for (const name in tileData.layers) {
 		const layer = tileData.layers[name]!;
 
-		const features: MapFeature[] = [];
-		const linestrings: Coord2d[][] = [];
+		layers[name] = {polylines: [], polygons: {indices: [], vertices: []}};
+
 		const polygons: Coord2d[][] = [];
 		for (let i = 0; i < layer.length; i++) {
 			const feature = layer.feature(i);
 			if (feature.type !== 2 && feature.type !== 3) continue;
 
-			const geometry = feature
-				.loadGeometry()
-				.map((shape) =>
-					shape.map((coord) => tileLocalCoordToMercator([coord.x, coord.y], feature.extent, {zoom, x, y})),
+			if (feature.type === 2) {
+				layers[name]!.polylines.push(
+					...feature
+						.loadGeometry()
+						.map((shape) =>
+							shape.map((coord) => tileLocalCoordToWorld([coord.x, coord.y], feature.extent, {zoom, x, y})),
+						),
 				);
-			if (feature.type === 2) linestrings.push(...geometry);
-			if (feature.type === 3) polygons.push(...geometry);
-
-			features.push({
-				id: feature.id,
-				extent: feature.extent,
-				type: VectorTileFeature.types[feature.type],
-				geometry,
-			});
+			}
+			if (feature.type === 3) {
+				polygons.push(
+					...feature
+						.loadGeometry()
+						.map((shape) =>
+							shape.map((coord) => tileLocalCoordToMercator([coord.x, coord.y], feature.extent, {zoom, x, y})),
+						),
+				);
+			}
 		}
 
-		const numLinestringVertices = linestrings.reduce((acc, linestring) => acc + linestring.length, 0);
-		const {indices: polygonIndices, vertices: polygonVertices} = processPolygons(polygons);
-		layers[name] = {
-			name: layer.name,
-			features,
-
-			linestrings: {
-				geometry: linestrings.map((linestring) => linestring.map((coord) => mercatorToWorld(coord))),
-
-				// The actual linestring mesh generation is done in the render loop since it changes along with the camera zoom. Here we just allocate the buffers.
-				numIndices: 0,
-				indexBuffer: new Uint32Array(numLinestringVertices * 15), // 15 = <max # triangles generated per corner, 5> * <3 vertices per triangle>
-				vertexBuffer: new Float32Array(numLinestringVertices * 21), // 21 = <max # vertices generated per corner, 7> * <3 coords per vertex>
-				uvBuffer: new Float32Array(numLinestringVertices * 14), // 14 = <max # vertices generated per corner, 7> * <2 coords per UV>
-			},
-			polygons: {
-				geometry: polygons.map((polygon) => polygon.map((coord) => mercatorToWorld(coord))),
-
-				numIndices: polygonIndices.length,
-				indexBuffer: new Uint32Array(polygonIndices),
-				vertexBuffer: new Float32Array(polygonVertices),
-			},
-		};
+		layers[name]!.polygons = processPolygons(polygons);
 	}
 
-	postMessage({id, layers} satisfies FetchTileReturn);
+	postMessage(layers satisfies FetchTileReturn);
 };
 
+// Earcuts the polygons and transforms the coordinates from Mercator to world space.
 const processPolygons = (polygons: Coord2d[][]) => {
 	const indices: number[] = [];
-	const vertices: number[] = [];
+	const vertices: Coord3d[] = [];
 
 	const featurePolygons = classifyRings(polygons);
 	for (let polygon of featurePolygons) {
@@ -116,7 +111,7 @@ const processPolygons = (polygons: Coord2d[][]) => {
 		}
 
 		indices.push(...polygonIndices.map((index) => index + vertices.length / 3));
-		vertices.push(...groupByTwos(polygonVertices).flatMap((coord) => mercatorToWorld(coord)));
+		vertices.push(...groupByTwos(polygonVertices).map((coord) => mercatorToWorld(coord)));
 	}
 
 	return {indices, vertices};

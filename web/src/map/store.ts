@@ -1,10 +1,11 @@
-import {type Coord3d, type MapTile, type TileIdStr} from "./types";
+import {type Coord3d, type TileIdStr} from "./types";
 import {altitudeToZoom, lngLatToWorld, zoomToAltitude} from "./util";
 import {canvas, device} from "./webgpu";
 import {Mat4} from "@/math/Mat4";
 import {Vec3} from "@/math/Vec3";
+import {type FetchTileReturn} from "@/workers/fetch-tile";
 
-export const tileCache = new Map<TileIdStr, MapTile | "pending">();
+export const tileCache = new Map<TileIdStr, FetchTileReturn | "pending">();
 
 const createDepthTexture = (size: [number, number]) =>
 	device.createTexture({

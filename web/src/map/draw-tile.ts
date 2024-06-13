@@ -1,20 +1,11 @@
 import {drawLines} from "./draw-lines";
 import {drawPolygons} from "./draw-polygons";
 import {store} from "./store";
-import {type MapLayer, type MapTile} from "./types";
+import {type Coord3d, type MapLayerData, type MapTile} from "./types";
 import {device} from "./webgpu";
 import {dispatchToWorker} from "@/worker-pool";
 
 const baseLineThickness = 0.008;
-const renderLayers: Array<{name: string; color: Float32Array}> = [
-	{name: `water`, color: new Float32Array([0, 0, 1])},
-	{name: `waterway`, color: new Float32Array([0, 0, 1])},
-	{name: `admin`, color: new Float32Array([1, 1, 1])},
-	{name: `building`, color: new Float32Array([1, 0.647, 0])},
-	{name: `structure`, color: new Float32Array([1, 0.647, 0])},
-	{name: `road`, color: new Float32Array([0.5, 0.5, 0.5])},
-	{name: `motorway_junction`, color: new Float32Array([0.5, 0.5, 0.5])},
-];
 
 export const genMeshes = async (tile: MapTile) => {
 	await Promise.all(
@@ -99,7 +90,7 @@ export const drawTile = (pass: GPURenderPassEncoder, tile: MapTile) => {
 	}
 };
 
-const drawLayer = (pass: GPURenderPassEncoder, color: Float32Array, layer: MapLayer) => {
+const drawLayer = (pass: GPURenderPassEncoder, color: Float32Array, layer: MapLayerData) => {
 	const linestrings = layer.linestrings;
 	if (linestrings.indexGpuBuffer && linestrings.vertexGpuBuffer && linestrings.uvGpuBuffer)
 		drawLines(pass, color, {

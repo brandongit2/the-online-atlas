@@ -8,6 +8,7 @@ import {type MapTile} from "./types";
 import {tileIdToStr} from "./util";
 import {canvas, canvasContext, device} from "./webgpu";
 import {dispatchToWorker} from "@/worker-pool";
+import {type FetchTileReturn} from "@/workers/fetch-tile";
 
 let hasResized = true;
 const frameLoop = async () => {
@@ -23,7 +24,7 @@ const frameLoop = async () => {
 	store.updateViewMatrix();
 
 	const tilesInView = getTilesInView();
-	const tilesToRender: MapTile[] = [];
+	const tilesToRender: FetchTileReturn[] = [];
 	for (const tileId of tilesInView) {
 		const tileIdStr = tileIdToStr(tileId);
 		const tile = tileCache.get(tileIdStr);

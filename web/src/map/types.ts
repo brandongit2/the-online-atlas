@@ -3,38 +3,28 @@ export type Coord3d = [number, number, number];
 
 export type TileId = {zoom: number; x: number; y: number};
 export type TileIdStr = `${number}/${number}/${number}`;
-export type MapTile = {
+export type MapTileData = {
 	id: TileIdStr;
-	layers: Record<string, MapLayer>;
+	layers: Record<string, MapLayerData>;
 };
 
-export type MapLayer = {
+export type MapLayerData = {
 	name: string;
-	features: MapFeature[];
-
-	linestrings: {
-		geometry: Coord3d[][];
-		numIndices: number;
-		indexBuffer: Uint32Array;
-		indexGpuBuffer?: GPUBuffer;
-		vertexBuffer: Float32Array;
-		vertexGpuBuffer?: GPUBuffer;
-		uvBuffer: Float32Array;
-		uvGpuBuffer?: GPUBuffer;
-	};
-	polygons: {
-		geometry: Coord3d[][];
-		numIndices: number;
-		indexBuffer: Uint32Array;
-		indexGpuBuffer?: GPUBuffer;
-		vertexBuffer: Float32Array;
-		vertexGpuBuffer?: GPUBuffer;
-	};
+	linestrings: Coord3d[][];
+	polygons: Coord3d[][];
 };
 
-export type MapFeature = {
-	id: number;
-	extent: number;
-	type: "LineString" | "Polygon";
-	geometry: Coord2d[][];
+export type RenderMaterial = {
+	color: Coord3d;
+};
+
+export type RenderInput = {
+	materials: Record<string, RenderMaterial>;
+	objects: Record<
+		string,
+		{
+			polylines: Coord3d[][];
+			polygons: {indices: number[]; vertices: Coord3d[]};
+		}
+	>;
 };
