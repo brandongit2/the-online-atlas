@@ -4,11 +4,21 @@ import "./controls";
 import {drawTile, genMeshes} from "./draw-tile";
 import {getTilesInView} from "./get-tiles-in-view";
 import {store, tileCache} from "./store";
-import {type MapTile} from "./types";
+import {type Coord3d, type MapTile, type RenderInput} from "./types";
 import {tileIdToStr} from "./util";
 import {canvas, canvasContext, device} from "./webgpu";
 import {dispatchToWorker} from "@/worker-pool";
 import {type FetchTileReturn} from "@/workers/fetch-tile";
+
+const materials: Record<string, {color: Coord3d}> = {
+	water: {color: [0, 0, 1]},
+	waterway: {color: [0, 0, 1]},
+	admin: {color: [1, 1, 1]},
+	building: {color: [1, 0.647, 0]},
+	structure: {color: [1, 0.647, 0]},
+	road: {color: [0.5, 0.5, 0.5]},
+	motorway_junction: {color: [0.5, 0.5, 0.5]},
+};
 
 let hasResized = true;
 const frameLoop = async () => {
@@ -42,13 +52,24 @@ const frameLoop = async () => {
 				});
 		}
 	}
-	await Promise.all(
-		tilesToRender.map(async (tile) => {
-			await genMeshes(tile);
-		}),
-	);
 
-	render(tilesToRender);
+	const layers: FetchTileReturn = {};
+	for (const tile of tilesToRender) {
+		for (const layerName in tile) {
+			const layer = tile[layerName]!;
+			if (!layers[layerName]) {
+				layers[layerName] = {polylines: [], polygons: {indices: [], vertices: []}};
+			}
+			layers[layerName]!.polylines.push(...layer.polylines);
+			layers[layerName]!.polygons.indices.push(...layer.polygons.indices);
+			layers[layerName]!.polygons.vertices.push(...layer.polygons.vertices);
+		}
+	}
+
+	render({
+		materials,
+		objects: layers,
+	});
 
 	requestAnimationFrame(() => {
 		frameLoop().catch((err) => {
@@ -80,16 +101,19 @@ const renderPassDescriptor = {
 	},
 } satisfies GPURenderPassDescriptor;
 
-const render = (tiles: MapTile[]) => {
+const render = (data: RenderInput) => {
 	const encoder = device.createCommandEncoder({label: `encoder`});
 	renderPassDescriptor.colorAttachments[0]!.view = canvasContext
 		.getCurrentTexture()
 		.createView({label: `colour texture view`});
 	const pass = encoder.beginRenderPass(renderPassDescriptor);
 
-	tiles.forEach((tile) => {
-		drawTile(pass, tile);
-	});
+	for (const materialName in data.objects) {
+		const material = data.materials[materialName]!;
+		const object = data.objects[materialName]!;
+
+		pass.setPipeline;
+	}
 
 	pass.end();
 	const commandBuffer = encoder.finish();
