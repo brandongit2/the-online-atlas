@@ -12,22 +12,22 @@ type Mat4Elements = [
 
 export class Mat4 {
 	// Element indices here are in row-major order.
-	_11: number = null!;
-	_12: number = null!;
-	_13: number = null!;
-	_14: number = null!;
-	_21: number = null!;
-	_22: number = null!;
-	_23: number = null!;
-	_24: number = null!;
-	_31: number = null!;
-	_32: number = null!;
-	_33: number = null!;
-	_34: number = null!;
-	_41: number = null!;
-	_42: number = null!;
-	_43: number = null!;
-	_44: number = null!;
+	_11!: number;
+	_12!: number;
+	_13!: number;
+	_14!: number;
+	_21!: number;
+	_22!: number;
+	_23!: number;
+	_24!: number;
+	_31!: number;
+	_32!: number;
+	_33!: number;
+	_34!: number;
+	_41!: number;
+	_42!: number;
+	_43!: number;
+	_44!: number;
 
 	constructor();
 	constructor(a: Mat4);

@@ -1,27 +1,27 @@
 import {clamp} from "lodash";
 
 import "./controls";
-import {drawTile, genMeshes} from "./draw-tile";
 import {getTilesInView} from "./get-tiles-in-view";
 import {store, tileCache} from "./store";
-import {type Coord3d, type MapTile, type RenderInput} from "./types";
+import {type Coord3d, type RenderInput} from "./types";
 import {tileIdToStr} from "./util";
 import {canvas, canvasContext, device} from "./webgpu";
 import {dispatchToWorker} from "@/worker-pool";
 import {type FetchTileReturn} from "@/workers/fetch-tile";
 
-const materials: Record<string, {color: Coord3d}> = {
-	water: {color: [0, 0, 1]},
-	waterway: {color: [0, 0, 1]},
-	admin: {color: [1, 1, 1]},
-	building: {color: [1, 0.647, 0]},
-	structure: {color: [1, 0.647, 0]},
-	road: {color: [0.5, 0.5, 0.5]},
-	motorway_junction: {color: [0.5, 0.5, 0.5]},
-};
+const materials: Array<{name: string; color: Coord3d}> = [
+	{name: `water`, color: [0, 0, 1]},
+	{name: `waterway`, color: [0, 0, 1]},
+	{name: `admin`, color: [1, 1, 1]},
+	{name: `building`, color: [1, 0.647, 0]},
+	{name: `structure`, color: [1, 0.647, 0]},
+	{name: `road`, color: [0.5, 0.5, 0.5]},
+	{name: `motorway_junction`, color: [0.5, 0.5, 0.5]},
+];
 
 let hasResized = true;
 const frameLoop = async () => {
+	// Window resizing logic
 	if (hasResized) {
 		const mapWidth = clamp(window.innerWidth * devicePixelRatio, 1, device.limits.maxTextureDimension2D);
 		const mapHeight = clamp(window.innerHeight * devicePixelRatio, 1, device.limits.maxTextureDimension2D);
