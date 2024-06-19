@@ -7,6 +7,7 @@ improvement is totally unclear. my thinking remains though that rust + wasm woul
 - more intentional memory management: javascript's garbage collection can kill performance when dealing with lots of
   data. while it's possible to carefully manipulate your code to minimize memory operations, it would be a lot easier to
   do it all directly.
+- also, data locality is something you could take advantage of in a non-GC language like rust.
 
 where rust + wasm does not have a clear advantage over javascript is in straight performance. javascript engines are
 incredibly optimized, and it takes quite some effort to see any straightforward performance improvement in rust on wasm.

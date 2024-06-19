@@ -24,5 +24,3 @@ canvasContext.configure({
 	device,
 	format: presentationFormat,
 });
-
-export {};
