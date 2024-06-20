@@ -1,32 +1,50 @@
 import {type Vec3} from "@/math/Vec3";
 
 export class Quaternion {
-	_x: number;
-	_y: number;
-	_z: number;
-	_w: number;
+	#x!: number;
+	#y!: number;
+	#z!: number;
+	#w!: number;
 
-	constructor(x: number, y: number, z: number, w: number) {
-		this._x = x;
-		this._y = y;
-		this._z = z;
-		this._w = w;
+	constructor();
+	constructor(x: number, y: number, z: number, w: number);
+	constructor(x?: number, y?: number, z?: number, w?: number) {
+		if (x === undefined) this.set();
+		else this.set(x, y!, z!, w!);
 	}
 
+	set: {
+		(): Quaternion;
+		(x: number, y: number, z: number, w: number): Quaternion;
+	} = (x?: number, y?: number, z?: number, w?: number) => {
+		if (x === undefined) {
+			this.#x = 1;
+			this.#y = 0;
+			this.#z = 0;
+			this.#w = 0;
+		} else {
+			this.#x = x;
+			this.#y = y!;
+			this.#z = z!;
+			this.#w = w!;
+		}
+		return this;
+	};
+
 	get x() {
-		return this._x;
+		return this.#x;
 	}
 
 	get y() {
-		return this._y;
+		return this.#y;
 	}
 
 	get z() {
-		return this._z;
+		return this.#z;
 	}
 
 	get w() {
-		return this._w;
+		return this.#w;
 	}
 
 	static fromAxisAngle = (axis: Vec3, angle: number) => {

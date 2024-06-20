@@ -1,6 +1,4 @@
-import {type Coord2d, type Coord3d, type TileId, type TileIdStr} from "./types";
-
-///// General math /////
+import {type Coord2d, type Coord3d, type TileId, type TileIdStr} from "@/map/types";
 
 export const {abs, cos, log, PI, sin, tan} = Math;
 
@@ -58,15 +56,3 @@ export const tileLocalCoordToWorld = (coord: Coord2d, extent: number, tileId: Ti
 	lngLatToWorld(mercatorToLngLat(tileLocalCoordToMercator(coord, extent, tileId)), radius);
 
 export const mercatorToWorld = (point: Coord2d): Coord3d => lngLatToWorld(mercatorToLngLat(point));
-
-///// Miscellaneous /////
-
-export const groupByTwos = (arr: number[]) => {
-	if (arr.length % 2 !== 0) throw new Error(`Array must have an even number of elements.`);
-
-	const coordArray: Coord2d[] = [];
-	for (let i = 0; i < arr.length; i += 2) {
-		coordArray.push([arr[i]!, arr[i + 1]!]);
-	}
-	return coordArray;
-};

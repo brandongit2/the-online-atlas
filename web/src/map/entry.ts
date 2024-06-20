@@ -1,14 +1,20 @@
 import "./controls";
-import {drawTriangle} from "./draw-triangle";
-import {canvasContext, device} from "./webgpu";
-import * as windowUtil from "./window";
+import {CubeGeometry} from "./entities/CubeGeometry";
+import {Mesh} from "./entities/Mesh";
+import {Scene} from "./entities/Scene";
+import * as windowUtils from "../utils/window-utils";
+import {Vec3} from "@/math/Vec3";
+import {renderPassDescriptor} from "@/utils/webgpu-utils";
+
+const scene = new Scene();
+scene.addChild(new Mesh(new CubeGeometry(), new Vec3(0, 0, -5)));
 
 // eslint-disable-next-line @typescript-eslint/require-await
 const frameLoop = async () => {
-	const hasResized = windowUtil.onFrame();
-	if (hasResized) renderPassDescriptor.depthStencilAttachment.view = windowUtil.depthTextureView;
+	const hasResized = windowUtils.onFrame();
+	if (hasResized) renderPassDescriptor.depthStencilAttachment.view = windowUtils.depthTextureView;
 
-	render();
+	scene.render();
 
 	requestAnimationFrame(() => {
 		frameLoop().catch((err) => {
@@ -22,34 +28,8 @@ requestAnimationFrame(() => {
 	});
 });
 
-const renderPassDescriptor = {
-	label: `render pass`,
-	colorAttachments: [
-		{
-			view: canvasContext.getCurrentTexture().createView({label: `colour texture view`}),
-			clearValue: [0, 1, 0, 1],
-			loadOp: `clear`,
-			storeOp: `store`,
-		},
-	],
-	depthStencilAttachment: {
-		view: windowUtil.depthTextureView,
-		depthClearValue: 1,
-		depthLoadOp: `clear`,
-		depthStoreOp: `store`,
-	},
-} satisfies GPURenderPassDescriptor;
-
-const render = () => {
-	renderPassDescriptor.colorAttachments[0]!.view = canvasContext
-		.getCurrentTexture()
-		.createView({label: `colour texture view`});
-	const encoder = device.createCommandEncoder({label: `command encoder`});
-	const renderPassEncoder = encoder.beginRenderPass(renderPassDescriptor);
-
-	drawTriangle(renderPassEncoder);
-
-	renderPassEncoder.end();
-	device.queue.submit([encoder.finish()]);
-	console.log(`Rendered`);
+export type DrawFn = (renderPassEncoder: GPURenderPassEncoder) => {
+	bindGroupLayouts: GPUBindGroupLayout[];
+	vertex: GPUVertexState;
+	fragment: GPUFragmentState;
 };

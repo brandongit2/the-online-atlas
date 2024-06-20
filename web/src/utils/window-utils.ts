@@ -1,9 +1,9 @@
 import {clamp} from "lodash";
 
-import {canvas, device} from "./webgpu";
+import {canvas, device} from "../map/webgpu";
 
 let hasResized = true;
-let mapDims: [number, number] = [window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio];
+export let mapDims: [number, number] = [window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio];
 
 // Returns true if the canvas has been resized
 export const onFrame = () => {

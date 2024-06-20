@@ -96,7 +96,7 @@ const linestringToMesh = (
 				vs +  0,
 				vs + -1,
 				vs + -2,
-			], is[0])
+			], is[0]);
 			is[0] += 6;
 
 			const primaryMiterDirection = Vec3.add(v8, primaryPrevNormal, primaryNextNormal);
@@ -121,7 +121,7 @@ const linestringToMesh = (
 						vs + 0,
 						vs + 3,
 						vs + 4,
-					], is[0])
+					], is[0]);
 				else
 					// prettier-ignore
 					indexBuffer.set([
@@ -134,7 +134,7 @@ const linestringToMesh = (
 						vs + 1,
 						vs + 3,
 						vs + 4,
-					], is[0])
+					], is[0]);
 				is[0] += 9;
 
 				vertexBuffer.set(
@@ -193,7 +193,7 @@ const linestringToMesh = (
 					vs + 2,
 					vs + 3,
 					vs + 4,
-				], is[0])
+				], is[0]);
 			else
 				// prettier-ignore
 				indexBuffer.set([
@@ -203,7 +203,7 @@ const linestringToMesh = (
 					vs + 2,
 					vs + 5,
 					vs + 3,
-				], is[0])
+				], is[0]);
 			is[0] += 6;
 
 			vertexBuffer.set(
@@ -251,7 +251,7 @@ const linestringToMesh = (
 			indexBuffer.set([
 				vi + 0, vi + -1, vi + -2, vi + 0, vi + 1, vi + -1, // Rect for previous segment
 				vi + 0, vi +  3, vi +  1, vi + 0, vi + 2, vi +  3, // Rect for cap extension
-			], is[0])
+			], is[0]);
 			is[0] += 12;
 			vertexBuffer.set(
 				[
@@ -284,7 +284,7 @@ const linestringToMesh = (
 				vi + 0,
 				vi + 2,
 				vi + 3,
-			], is[0])
+			], is[0]);
 			is[0] += 6;
 			vertexBuffer.set(
 				[
@@ -314,7 +314,7 @@ const linestringToMesh = (
 				vi + 0,
 				vi + 1,
 				vi + 3,
-			], is[0])
+			], is[0]);
 			is[0] += 6;
 			vertexBuffer.set(
 				[
