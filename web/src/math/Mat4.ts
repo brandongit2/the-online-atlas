@@ -67,11 +67,11 @@ export class Mat4 {
 	set(v1: Vec3, v2: Vec3, v3: Vec3): Mat4;
 	// prettier-ignore
 	set(
-			_11: number, _12: number, _13: number, _14: number,
-			_21: number, _22: number, _23: number, _24: number,
-			_31: number, _32: number, _33: number, _34: number,
-			_41: number, _42: number, _43: number, _44: number,
-		): Mat4;
+		_11: number, _12: number, _13: number, _14: number,
+		_21: number, _22: number, _23: number, _24: number,
+		_31: number, _32: number, _33: number, _34: number,
+		_41: number, _42: number, _43: number, _44: number,
+	): Mat4;
 	// prettier-ignore
 	set (
 		_11OrOthers?: number | Mat4 | Mat4Elements | Vec3, _12OrV2?: number | Vec3, _13OrV3?: number | Vec3, _14?: number,
