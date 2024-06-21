@@ -217,6 +217,17 @@ export class Mat4 {
 	};
 	makePerspectiveMatrix = (fovX: number, aspect: number, near: number, far: number) =>
 		Mat4.makePerspectiveMatrix(this, fovX, aspect, near, far);
+
+	static fromTranslation = (m: Mat4 | null, x: number, y: number, z: number) => {
+		m ??= new Mat4();
+		// prettier-ignore
+		return m.set(
+			1, 0, 0, x,
+			0, 1, 0, y,
+			0, 0, 1, z,
+			0, 0, 0, 1,
+		);
+	};
 }
 
 // Certain operations necessitate a temporary matrix to store intermediate results.
