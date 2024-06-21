@@ -1,4 +1,7 @@
-export abstract class Geometry {
-	abstract indexGpuBuffer: GPUBuffer;
-	abstract vertexGpuBuffer: GPUBuffer;
-}
+export type Geometry = {
+	vertices: number[];
+	vertexGpuBuffer: GPUBuffer;
+
+	indices: number[];
+	indexGpuBuffer: GPUBuffer;
+};

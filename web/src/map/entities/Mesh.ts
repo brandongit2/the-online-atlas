@@ -1,24 +1,41 @@
+import invariant from "tiny-invariant";
+
 import {type Geometry} from "./Geometry";
+import {type Material} from "./Material";
 import {Object3d} from "./Object3d";
-import {type Mat4} from "@/math/Mat4";
-import {type Vec3} from "@/math/Vec3";
+import {device} from "../webgpu";
 
 export class Mesh extends Object3d {
-	#position!: Vec3;
-	get position() {
-		return this.#position;
-	}
-	set position(position) {
-		this.#position = position;
-		this.modelMatrix = Mat4.fromTranslation(position);
-	}
-
-	modelMatrix!: Mat4;
-
 	constructor(
 		public geometry: Geometry,
-		public position: Vec3,
+		public material: Material,
 	) {
 		super();
+
+		this.meshBindGroup = device.createBindGroup({
+			layout: this.material.__proto.meshBindGroupLayout,
+			entries: [
+				{
+					binding: 0,
+					resource: {buffer: this.modelMatrixUniformBuffer},
+				},
+			],
+		});
+	}
+
+	meshBindGroup: GPUBindGroup;
+
+	draw(renderPassEncoder: GPURenderPassEncoder) {
+		invariant(this.currentScene, `Mesh must be in a scene to draw`);
+
+		renderPassEncoder.setPipeline(this.material.__proto.renderPipeline);
+		renderPassEncoder.setBindGroup(0, this.currentScene.activeCamera.bindGroup);
+		renderPassEncoder.setBindGroup(1, this.material.materialBindGroup);
+		renderPassEncoder.setBindGroup(2, this.meshBindGroup);
+
+		renderPassEncoder.setIndexBuffer(this.geometry.indexGpuBuffer, `uint32`);
+		renderPassEncoder.setVertexBuffer(0, this.geometry.vertexGpuBuffer);
+
+		renderPassEncoder.drawIndexed(this.geometry.indices.length);
 	}
 }

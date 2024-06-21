@@ -2,7 +2,7 @@ import {clamp} from "lodash";
 
 import {type Mat4} from "./Mat4";
 import {type Quaternion} from "./Quaternion";
-import {roughEq} from "@/map/util";
+import {roughEq} from "@/utils/math-utils";
 
 export class Vec3 {
 	x = 0;
