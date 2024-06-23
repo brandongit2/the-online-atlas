@@ -7,6 +7,8 @@ export const radToDeg = (a: number) => a * (180 / Math.PI);
 
 export const log2 = (x: number) => log(x) / log(2);
 export const roughEq = (a: number, b: number, epsilon = 1e-6) => abs(a - b) < epsilon;
+export const sin_d = (a: number) => sin(degToRad(a));
+export const cos_d = (a: number) => cos(degToRad(a));
 export const tan_d = (a: number) => tan(degToRad(a));
 
 ///// Map math /////

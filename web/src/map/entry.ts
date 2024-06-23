@@ -1,22 +1,20 @@
-import "./controls";
 import {CubeGeometry} from "./entities/CubeGeometry";
 import {FlatMaterial} from "./entities/FlatMaterial";
+import {GlobeViewControls} from "./entities/GlobeViewControls";
 import {Mesh} from "./entities/Mesh";
+import {PerspectiveCamera} from "./entities/PerspectiveCamera";
 import {Scene} from "./entities/Scene";
 import * as windowUtils from "../utils/window-utils";
-import {Vec3} from "@/math/Vec3";
-import {renderPassDescriptor} from "@/utils/webgpu-utils";
 
-const scene = new Scene();
-scene.addChild(new Mesh(new CubeGeometry(), new FlatMaterial([1, 0, 0])).setPosition(new Vec3(0, 0, -5)));
+const camera = new PerspectiveCamera();
+new GlobeViewControls(camera);
+const scene = new Scene(camera);
+const mesh = new Mesh(new CubeGeometry(), new FlatMaterial([1, 0, 0]));
+scene.addChild(mesh);
 
 // eslint-disable-next-line @typescript-eslint/require-await
 const frameLoop = async () => {
-	const hasResized = windowUtils.onFrame();
-	if (hasResized) {
-		renderPassDescriptor.depthStencilAttachment.view = windowUtils.depthTextureView;
-		scene.updateAspectRatio();
-	}
+	windowUtils.onFrame();
 
 	scene.render();
 

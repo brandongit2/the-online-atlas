@@ -1,3 +1,5 @@
+import {BehaviorSubject} from "rxjs";
+
 import {Camera} from "./Camera";
 import {type Material} from "./Material";
 import {type Coord3d} from "../types";
@@ -6,20 +8,16 @@ import {device, presentationFormat} from "../webgpu";
 export class FlatMaterial implements Material {
 	__proto = FlatMaterial;
 
-	#color!: Coord3d;
-	get color() {
-		return this.#color;
-	}
-	setColor(color: Coord3d) {
-		this.#color = color;
-		device.queue.writeBuffer(this.#colorUniformBuffer, 0, new Float32Array(color));
-	}
+	color: BehaviorSubject<Coord3d>;
 
 	constructor(color: Coord3d) {
-		this.setColor(color);
+		this.color = new BehaviorSubject(color);
+		this.color.subscribe((color) => {
+			device.queue.writeBuffer(this.colorUniformBuffer, 0, new Float32Array(color));
+		});
 	}
 
-	#colorUniformBuffer = device.createBuffer({
+	colorUniformBuffer = device.createBuffer({
 		label: `flat material colour uniform buffer`,
 		size: 3 * Float32Array.BYTES_PER_ELEMENT,
 		usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
@@ -65,7 +63,7 @@ export class FlatMaterial implements Material {
 		entries: [
 			{
 				binding: 0,
-				resource: {buffer: this.#colorUniformBuffer},
+				resource: {buffer: this.colorUniformBuffer},
 			},
 		],
 	});

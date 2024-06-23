@@ -6,6 +6,8 @@ import {Object3d} from "./Object3d";
 import {device} from "../webgpu";
 
 export class Mesh extends Object3d {
+	meshBindGroup: GPUBindGroup;
+
 	constructor(
 		public geometry: Geometry,
 		public material: Material,
@@ -22,8 +24,6 @@ export class Mesh extends Object3d {
 			],
 		});
 	}
-
-	meshBindGroup: GPUBindGroup;
 
 	draw(renderPassEncoder: GPURenderPassEncoder) {
 		invariant(this.currentScene, `Mesh must be in a scene to draw`);

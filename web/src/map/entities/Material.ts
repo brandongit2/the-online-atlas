@@ -4,7 +4,7 @@ export type MaterialClass = {
 };
 
 export type Material = {
-	// A hack to make TypeScript aware of the instance's prototype.
+	// A hack to make TypeScript aware of the instance's prototype. Used for type-checking static properties.
 	// When implementing `Material`, set `__proto` to be the class itself.
 	// e.g.:
 	// class FlatMaterial implements Material {

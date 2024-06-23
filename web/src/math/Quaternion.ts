@@ -34,15 +34,12 @@ export class Quaternion {
 	get x() {
 		return this.#x;
 	}
-
 	get y() {
 		return this.#y;
 	}
-
 	get z() {
 		return this.#z;
 	}
-
 	get w() {
 		return this.#w;
 	}

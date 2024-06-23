@@ -12,9 +12,13 @@ export const renderPassDescriptor = {
 		},
 	],
 	depthStencilAttachment: {
-		view: depthTextureView,
+		view: depthTextureView.getValue(),
 		depthClearValue: 0,
 		depthLoadOp: `clear`,
 		depthStoreOp: `store`,
 	},
 } satisfies GPURenderPassDescriptor;
+
+depthTextureView.subscribe((depthTextureView) => {
+	renderPassDescriptor.depthStencilAttachment.view = depthTextureView;
+});

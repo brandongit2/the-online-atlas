@@ -98,10 +98,10 @@ export class Vec3 {
 	};
 
 	static applyMat4 = (v: Vec3 | null, m: Mat4, a: Vec3) => {
-		const w = m._41 * a.x + m._42 * a.y + m._43 * a.z + m._44;
-		const x = (m._11 * a.x + m._12 * a.y + m._13 * a.z + m._14) / w;
-		const y = (m._21 * a.x + m._22 * a.y + m._23 * a.z + m._24) / w;
-		const z = (m._31 * a.x + m._32 * a.y + m._33 * a.z + m._34) / w;
+		const w = m.e41 * a.x + m.e42 * a.y + m.e43 * a.z + m.e44;
+		const x = (m.e11 * a.x + m.e12 * a.y + m.e13 * a.z + m.e14) / w;
+		const y = (m.e21 * a.x + m.e22 * a.y + m.e23 * a.z + m.e24) / w;
+		const z = (m.e31 * a.x + m.e32 * a.y + m.e33 * a.z + m.e34) / w;
 		return v ? v.set(x, y, z) : new Vec3(x, y, z);
 	};
 	applyMat4 = (m: Mat4) => Vec3.applyMat4(null, m, this);
