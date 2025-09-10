@@ -26,7 +26,7 @@ export class Mesh extends Object3d {
 	}
 
 	draw(renderPassEncoder: GPURenderPassEncoder) {
-		invariant(this.currentScene, `Mesh must be in a scene to draw`);
+		invariant(this.currentScene, `Mesh must be in a scene in order to draw`);
 
 		renderPassEncoder.setPipeline(this.material.__proto.renderPipeline);
 		renderPassEncoder.setBindGroup(0, this.currentScene.activeCamera.bindGroup);
